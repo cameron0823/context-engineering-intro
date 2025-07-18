@@ -1,0 +1,17 @@
+﻿# Minimal dependencies for quick start
+fastapi
+uvicorn[standard]
+python-multipart
+sqlalchemy
+alembic
+pydantic
+pydantic-settings
+python-dotenv
+python-jose[cryptography]
+passlib[bcrypt]
+httpx
+tenacity
+redis
+prometheus-client
+structlog
+aiosqlite

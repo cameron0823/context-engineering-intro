@@ -1,296 +1,283 @@
-# Context Engineering Template
+# Tree Service Estimating Application
 
-A comprehensive template for getting started with Context Engineering - the discipline of engineering context for AI coding assistants so they have the information necessary to get the job done end to end.
+A production-ready tree service estimating application built with FastAPI, PostgreSQL, and modern Python practices. Features deterministic cost calculations, audit trails, role-based access control, and external API integrations.
 
-> **Context Engineering is 10x better than prompt engineering and 100x better than vibe coding.**
+## 🚀 Features
 
-## 🚀 Quick Start
+- **Deterministic Formula Pipeline**: Consistent calculations using Decimal precision
+- **Role-Based Access Control**: Admin, Manager, Estimator, and Viewer roles
+- **Audit Trail**: Complete change tracking with 7-year retention
+- **Effective Dating**: Historical cost tracking and quote recreation
+- **External Integrations**: Google Maps, QuickBooks, and fuel price APIs
+- **Real-Time Updates**: WebSocket support for collaborative editing
+- **Mobile Responsive**: Works offline with sync capabilities
+
+## 📁 Project Structure
+
+```
+.
+├── src/
+│   ├── api/          # FastAPI endpoints
+│   ├── core/         # Core utilities (config, security, calculator)
+│   ├── models/       # SQLAlchemy models
+│   ├── schemas/      # Pydantic schemas
+│   ├── services/     # Business logic services
+│   ├── db/           # Database utilities
+│   └── utils/        # Helper utilities
+├── tests/            # Test suite
+├── alembic/          # Database migrations
+├── docker-compose.yml
+├── requirements.txt
+└── .env.example
+```
+
+## ✅ Implementation Status
+
+### Completed Components
+
+1. **Project Structure** ✅
+   - All directories created
+   - Python package structure initialized
+
+2. **Configuration** ✅
+   - `src/core/config.py` - Pydantic settings management
+   - `.env.example` - Environment variables template
+   - `requirements.txt` - All dependencies
+
+3. **Docker Setup** ✅
+   - `docker-compose.yml` - PostgreSQL, Redis, and app services
+   - `Dockerfile` - Production container
+   - `init.sql` - Database initialization
+
+4. **Database Foundation** ✅
+   - `src/db/session.py` - Async database session management
+   - Alembic configuration for migrations
+
+5. **Base Models & Audit** ✅
+   - `src/models/base.py` - Base model with audit fields
+   - `src/models/audit.py` - Comprehensive audit logging
+   - `src/services/audit.py` - Audit service implementation
+
+6. **Authentication System** ✅
+   - `src/models/user.py` - User model with roles
+   - `src/core/security.py` - JWT and password hashing
+   - `src/schemas/user.py` - User validation schemas
+   - `src/api/deps.py` - Authentication dependencies
+   - `src/api/auth.py` - Auth endpoints (login, register, etc.)
+
+7. **Cost Management** ✅
+   - `src/models/costs.py` - Cost models with effective dating
+   - `src/schemas/costs.py` - Cost validation schemas
+
+8. **Calculator Engine** ✅
+   - `src/core/calculator.py` - Deterministic calculations
+   - `src/schemas/calculation.py` - Calculation schemas
+   - `src/utils/rounding.py` - Financial rounding utilities
+
+9. **Estimate Management** ✅
+   - `src/models/estimate.py` - Estimate model
+   - `src/schemas/estimate.py` - Estimate schemas
+
+### Remaining Tasks
+
+1. **API Endpoints** 🔄
+   - [ ] `src/api/estimates.py` - Estimate CRUD endpoints
+   - [ ] `src/api/costs.py` - Cost management endpoints
+   - [ ] `src/api/reports.py` - Reporting endpoints
+
+2. **Services** 🔄
+   - [ ] `src/services/calculation.py` - Calculation orchestration
+   - [ ] `src/services/external_apis.py` - External API integrations
+
+3. **Database** 🔄
+   - [ ] Create initial Alembic migration
+   - [ ] Add database indexes
+   - [ ] Create materialized views for reports
+
+4. **Testing** 🔄
+   - [ ] `tests/conftest.py` - Pytest fixtures
+   - [ ] `tests/test_calculator.py` - Calculator tests
+   - [ ] `tests/test_auth.py` - Authentication tests
+   - [ ] `tests/test_estimates.py` - Estimate tests
+   - [ ] `tests/test_costs.py` - Cost management tests
+
+5. **Additional Features** 🔄
+   - [ ] WebSocket support for real-time updates
+   - [ ] PDF generation for estimates
+   - [ ] Excel export functionality
+   - [ ] Email notifications
+
+## 🛠️ Setup Instructions
+
+### Prerequisites
+
+- Python 3.11+
+- Docker and Docker Compose
+- PostgreSQL 14+ (via Docker)
+- Redis (via Docker)
+
+### Local Development Setup
+
+1. **Clone the repository**
+   ```bash
+   git clone <repository-url>
+   cd tree-service-estimating
+   ```
+
+2. **Create virtual environment**
+   ```bash
+   python -m venv venv_linux
+   source venv_linux/bin/activate  # On Windows: venv_linux\Scripts\activate
+   ```
+
+3. **Install dependencies**
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+4. **Configure environment**
+   ```bash
+   cp .env.example .env
+   # Edit .env with your configuration
+   ```
+
+5. **Start services**
+   ```bash
+   docker-compose up -d
+   ```
+
+6. **Run migrations**
+   ```bash
+   alembic upgrade head
+   ```
+
+7. **Start the application**
+   ```bash
+   uvicorn src.main:app --reload
+   ```
+
+8. **Access the application**
+   - API: http://localhost:8000
+   - Docs: http://localhost:8000/docs
+   - Metrics: http://localhost:8000/metrics
+
+## 🧪 Running Tests
 
 ```bash
-# 1. Clone this template
-git clone https://github.com/coleam00/Context-Engineering-Intro.git
-cd Context-Engineering-Intro
+# Run all tests
+pytest tests/ -v
 
-# 2. Set up your project rules (optional - template provided)
-# Edit CLAUDE.md to add your project-specific guidelines
+# Run with coverage
+pytest tests/ -v --cov=src --cov-report=term-missing
 
-# 3. Add examples (highly recommended)
-# Place relevant code examples in the examples/ folder
-
-# 4. Create your initial feature request
-# Edit INITIAL.md with your feature requirements
-
-# 5. Generate a comprehensive PRP (Product Requirements Prompt)
-# In Claude Code, run:
-/generate-prp INITIAL.md
-
-# 6. Execute the PRP to implement your feature
-# In Claude Code, run:
-/execute-prp PRPs/your-feature-name.md
+# Run specific test file
+pytest tests/test_calculator.py -v
 ```
 
-## 📚 Table of Contents
+## 📝 API Documentation
 
-- [What is Context Engineering?](#what-is-context-engineering)
-- [Template Structure](#template-structure)
-- [Step-by-Step Guide](#step-by-step-guide)
-- [Writing Effective INITIAL.md Files](#writing-effective-initialmd-files)
-- [The PRP Workflow](#the-prp-workflow)
-- [Using Examples Effectively](#using-examples-effectively)
-- [Best Practices](#best-practices)
+Once running, visit http://localhost:8000/docs for interactive API documentation.
 
-## What is Context Engineering?
+### Authentication
 
-Context Engineering represents a paradigm shift from traditional prompt engineering:
-
-### Prompt Engineering vs Context Engineering
-
-**Prompt Engineering:**
-- Focuses on clever wording and specific phrasing
-- Limited to how you phrase a task
-- Like giving someone a sticky note
-
-**Context Engineering:**
-- A complete system for providing comprehensive context
-- Includes documentation, examples, rules, patterns, and validation
-- Like writing a full screenplay with all the details
-
-### Why Context Engineering Matters
-
-1. **Reduces AI Failures**: Most agent failures aren't model failures - they're context failures
-2. **Ensures Consistency**: AI follows your project patterns and conventions
-3. **Enables Complex Features**: AI can handle multi-step implementations with proper context
-4. **Self-Correcting**: Validation loops allow AI to fix its own mistakes
-
-## Template Structure
-
-```
-context-engineering-intro/
-├── .claude/
-│   ├── commands/
-│   │   ├── generate-prp.md    # Generates comprehensive PRPs
-│   │   └── execute-prp.md     # Executes PRPs to implement features
-│   └── settings.local.json    # Claude Code permissions
-├── PRPs/
-│   ├── templates/
-│   │   └── prp_base.md       # Base template for PRPs
-│   └── EXAMPLE_multi_agent_prp.md  # Example of a complete PRP
-├── examples/                  # Your code examples (critical!)
-├── CLAUDE.md                 # Global rules for AI assistant
-├── INITIAL.md               # Template for feature requests
-├── INITIAL_EXAMPLE.md       # Example feature request
-└── README.md                # This file
-```
-
-This template doesn't focus on RAG and tools with context engineering because I have a LOT more in store for that soon. ;)
-
-## Step-by-Step Guide
-
-### 1. Set Up Global Rules (CLAUDE.md)
-
-The `CLAUDE.md` file contains project-wide rules that the AI assistant will follow in every conversation. The template includes:
-
-- **Project awareness**: Reading planning docs, checking tasks
-- **Code structure**: File size limits, module organization
-- **Testing requirements**: Unit test patterns, coverage expectations
-- **Style conventions**: Language preferences, formatting rules
-- **Documentation standards**: Docstring formats, commenting practices
-
-**You can use the provided template as-is or customize it for your project.**
-
-### 2. Create Your Initial Feature Request
-
-Edit `INITIAL.md` to describe what you want to build:
-
-```markdown
-## FEATURE:
-[Describe what you want to build - be specific about functionality and requirements]
-
-## EXAMPLES:
-[List any example files in the examples/ folder and explain how they should be used]
-
-## DOCUMENTATION:
-[Include links to relevant documentation, APIs, or MCP server resources]
-
-## OTHER CONSIDERATIONS:
-[Mention any gotchas, specific requirements, or things AI assistants commonly miss]
-```
-
-**See `INITIAL_EXAMPLE.md` for a complete example.**
-
-### 3. Generate the PRP
-
-PRPs (Product Requirements Prompts) are comprehensive implementation blueprints that include:
-
-- Complete context and documentation
-- Implementation steps with validation
-- Error handling patterns
-- Test requirements
-
-They are similar to PRDs (Product Requirements Documents) but are crafted more specifically to instruct an AI coding assistant.
-
-Run in Claude Code:
-```bash
-/generate-prp INITIAL.md
-```
-
-**Note:** The slash commands are custom commands defined in `.claude/commands/`. You can view their implementation:
-- `.claude/commands/generate-prp.md` - See how it researches and creates PRPs
-- `.claude/commands/execute-prp.md` - See how it implements features from PRPs
-
-The `$ARGUMENTS` variable in these commands receives whatever you pass after the command name (e.g., `INITIAL.md` or `PRPs/your-feature.md`).
-
-This command will:
-1. Read your feature request
-2. Research the codebase for patterns
-3. Search for relevant documentation
-4. Create a comprehensive PRP in `PRPs/your-feature-name.md`
-
-### 4. Execute the PRP
-
-Once generated, execute the PRP to implement your feature:
+All endpoints except `/api/auth/login` and `/api/auth/register` require JWT authentication.
 
 ```bash
-/execute-prp PRPs/your-feature-name.md
+# Get token
+curl -X POST http://localhost:8000/api/auth/login \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -d "username=admin&password=password"
+
+# Use token
+curl -X GET http://localhost:8000/api/estimates \
+  -H "Authorization: Bearer YOUR_TOKEN_HERE"
 ```
 
-The AI coding assistant will:
-1. Read all context from the PRP
-2. Create a detailed implementation plan
-3. Execute each step with validation
-4. Run tests and fix any issues
-5. Ensure all success criteria are met
+## 🔒 Security Considerations
 
-## Writing Effective INITIAL.md Files
+- JWT tokens expire after 30 minutes
+- Passwords require uppercase, lowercase, digit, and special character
+- All financial calculations use Decimal precision
+- Complete audit trail for compliance
+- Role-based access control for sensitive data
 
-### Key Sections Explained
+## 📊 Business Rules
 
-**FEATURE**: Be specific and comprehensive
-- ❌ "Build a web scraper"
-- ✅ "Build an async web scraper using BeautifulSoup that extracts product data from e-commerce sites, handles rate limiting, and stores results in PostgreSQL"
+- **Formula Pipeline**: Direct Labor → Equipment → Overhead → Safety Buffer → Profit → Round to $5
+- **Default Percentages**:
+  - Overhead: 25%
+  - Profit: 35%
+  - Safety Buffer: 10%
+- **Maximum Limits**:
+  - Travel: 500 miles
+  - Work hours: 16 per day
+  - Crew size: 10 people
 
-**EXAMPLES**: Leverage the examples/ folder
-- Place relevant code patterns in `examples/`
-- Reference specific files and patterns to follow
-- Explain what aspects should be mimicked
+## 🚀 Deployment
 
-**DOCUMENTATION**: Include all relevant resources
-- API documentation URLs
-- Library guides
-- MCP server documentation
-- Database schemas
+See `Dockerfile` for production container configuration.
 
-**OTHER CONSIDERATIONS**: Capture important details
-- Authentication requirements
-- Rate limits or quotas
-- Common pitfalls
-- Performance requirements
+### Environment Variables
 
-## The PRP Workflow
+Critical production variables:
+- `DATABASE_URL` - PostgreSQL connection string
+- `SECRET_KEY` - JWT signing key (generate securely!)
+- `GOOGLE_MAPS_API_KEY` - For distance calculations
+- `QUICKBOOKS_*` - QuickBooks integration credentials
 
-### How /generate-prp Works
+## 📈 Monitoring
 
-The command follows this process:
+- Prometheus metrics at `/metrics`
+- Structured JSON logging
+- Health check at `/health`
 
-1. **Research Phase**
-   - Analyzes your codebase for patterns
-   - Searches for similar implementations
-   - Identifies conventions to follow
+## 🤝 Contributing
 
-2. **Documentation Gathering**
-   - Fetches relevant API docs
-   - Includes library documentation
-   - Adds gotchas and quirks
+1. Follow PEP8 style guide
+2. Add tests for new features
+3. Update documentation
+4. Run linters before committing
 
-3. **Blueprint Creation**
-   - Creates step-by-step implementation plan
-   - Includes validation gates
-   - Adds test requirements
+## 📄 License
 
-4. **Quality Check**
-   - Scores confidence level (1-10)
-   - Ensures all context is included
+[Your License Here]
 
-### How /execute-prp Works
+---
 
-1. **Load Context**: Reads the entire PRP
-2. **Plan**: Creates detailed task list using TodoWrite
-3. **Execute**: Implements each component
-4. **Validate**: Runs tests and linting
-5. **Iterate**: Fixes any issues found
-6. **Complete**: Ensures all requirements met
+## Next Steps for Implementation
 
-See `PRPs/EXAMPLE_multi_agent_prp.md` for a complete example of what gets generated.
+To complete the application, follow these steps:
 
-## Using Examples Effectively
+1. **Create API Endpoints**
+   - Copy the pattern from `src/api/auth.py`
+   - Implement CRUD operations for estimates and costs
+   - Add proper permission checks using dependencies
 
-The `examples/` folder is **critical** for success. AI coding assistants perform much better when they can see patterns to follow.
+2. **Implement Services**
+   - Create `calculation.py` service to orchestrate calculations
+   - Implement external API integrations with proper error handling
 
-### What to Include in Examples
+3. **Add Tests**
+   - Use the test examples from the PRP
+   - Ensure >80% code coverage
+   - Test all edge cases
 
-1. **Code Structure Patterns**
-   - How you organize modules
-   - Import conventions
-   - Class/function patterns
+4. **Run Validation**
+   ```bash
+   # Syntax and style
+   ruff check src/ tests/ --fix
+   mypy src/
+   black src/ tests/
+   
+   # Run tests
+   pytest tests/ -v
+   
+   # Start services and test manually
+   docker-compose up -d
+   uvicorn src.main:app --reload
+   ```
 
-2. **Testing Patterns**
-   - Test file structure
-   - Mocking approaches
-   - Assertion styles
-
-3. **Integration Patterns**
-   - API client implementations
-   - Database connections
-   - Authentication flows
-
-4. **CLI Patterns**
-   - Argument parsing
-   - Output formatting
-   - Error handling
-
-### Example Structure
-
-```
-examples/
-├── README.md           # Explains what each example demonstrates
-├── cli.py             # CLI implementation pattern
-├── agent/             # Agent architecture patterns
-│   ├── agent.py      # Agent creation pattern
-│   ├── tools.py      # Tool implementation pattern
-│   └── providers.py  # Multi-provider pattern
-└── tests/            # Testing patterns
-    ├── test_agent.py # Unit test patterns
-    └── conftest.py   # Pytest configuration
-```
-
-## Best Practices
-
-### 1. Be Explicit in INITIAL.md
-- Don't assume the AI knows your preferences
-- Include specific requirements and constraints
-- Reference examples liberally
-
-### 2. Provide Comprehensive Examples
-- More examples = better implementations
-- Show both what to do AND what not to do
-- Include error handling patterns
-
-### 3. Use Validation Gates
-- PRPs include test commands that must pass
-- AI will iterate until all validations succeed
-- This ensures working code on first try
-
-### 4. Leverage Documentation
-- Include official API docs
-- Add MCP server resources
-- Reference specific documentation sections
-
-### 5. Customize CLAUDE.md
-- Add your conventions
-- Include project-specific rules
-- Define coding standards
-
-## Resources
-
-- [Claude Code Documentation](https://docs.anthropic.com/en/docs/claude-code)
-- [Context Engineering Best Practices](https://www.philschmid.de/context-engineering)
+5. **Complete Documentation**
+   - Add API endpoint documentation
+   - Create user guides
+   - Document deployment process
