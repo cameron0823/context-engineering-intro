@@ -21,7 +21,9 @@
       "Bash(venv_linux/Scripts/pip.exe list)",
       "Bash(..venvScriptsActivate.ps1)",
       "Bash(./venv_linux/Scripts/pip.exe install email-validator)",
-      "Bash(curl:*)"
+      "Bash(curl:*)",
+      "Bash(start cmd /k \"python -m uvicorn src.main:app --reload --port 8002\")",
+      "Bash(pip install:*)"
     ],
     "deny": []
   }
