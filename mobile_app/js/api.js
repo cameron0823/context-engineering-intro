@@ -4,7 +4,7 @@ class APIService {
     // Production API URL
     this.baseUrl = window.location.hostname === 'localhost' 
       ? 'http://localhost:8000' 
-      : 'https://tree-api.railway.app';
+      : 'https://context-engineering-intro-production.up.railway.app/api';
     this.timeout = 30000; // 30 seconds
   }
   

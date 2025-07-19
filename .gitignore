@@ -62,3 +62,10 @@ celerybeat.pid
 
 # Docker
 docker-compose.override.yml
+
+# Firebase cache
+.firebase/
+firebase-debug.log
+
+# npm global packages (Windows)
+%USERPROFILE%/

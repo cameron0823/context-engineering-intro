@@ -25,9 +25,14 @@ COPY alembic ./alembic
 COPY alembic.ini .
 # Copy .env.example if no .env exists
 COPY .env.example .env.example
+# Copy start script
+COPY start.sh .
 
 # Create necessary directories
 RUN mkdir -p uploads logs
+
+# Make start script executable
+RUN chmod +x start.sh
 
 # Create non-root user
 RUN useradd -m -u 1000 appuser && chown -R appuser:appuser /app
@@ -39,5 +44,5 @@ EXPOSE 8000
 # Railway will set PORT env var
 ENV PORT=8000
 
-# Default command - use PORT from environment
-CMD uvicorn src.main:app --host 0.0.0.0 --port $PORT
+# Default command - use start script
+CMD ["./start.sh"]
