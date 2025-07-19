@@ -1,0 +1,31 @@
+# Core dependencies for local development
+fastapi==0.116.1
+uvicorn[standard]==0.35.0
+python-multipart==0.0.6
+python-dotenv==1.0.1
+pydantic==2.11.0
+pydantic-settings==2.7.1
+
+# Database - using sqlite for local dev
+sqlalchemy==2.0.25
+aiosqlite==0.20.0
+
+# Authentication
+python-jose[cryptography]==3.3.0
+passlib[bcrypt]==1.7.4
+
+# Redis (optional for local)
+redis==5.0.1
+
+# HTTP client
+httpx==0.30.0
+
+# CORS
+fastapi-cors==0.0.6
+
+# Monitoring (optional)
+# prometheus-client==0.20.0
+
+# Utils
+pytz==2024.2
+structlog==24.5.0

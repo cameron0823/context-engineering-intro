@@ -4,7 +4,7 @@ Cost management schemas for request/response validation.
 from typing import Optional, List
 from datetime import date, datetime
 from decimal import Decimal
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Field, field_validator, ConfigDict
 
 
 class LaborRateBase(BaseModel):
@@ -20,14 +20,16 @@ class LaborRateBase(BaseModel):
     is_active: bool = True
     notes: Optional[str] = Field(None, max_length=500)
     
-    @validator('effective_to')
+    @field_validator('effective_to')
+    @classmethod
     def validate_effective_to(cls, v, values):
         """Ensure effective_to is after effective_from."""
         if v and 'effective_from' in values and v <= values['effective_from']:
             raise ValueError('effective_to must be after effective_from')
         return v
     
-    @validator('hourly_rate', 'overtime_multiplier', 'weekend_multiplier', 'emergency_multiplier')
+    @field_validator('hourly_rate', 'overtime_multiplier', 'weekend_multiplier', 'emergency_multiplier')
+    @classmethod
     def quantize_decimals(cls, v):
         """Ensure proper decimal precision."""
         return v.quantize(Decimal('0.01'))
@@ -49,12 +51,18 @@ class LaborRateUpdate(BaseModel):
     is_active: Optional[bool] = None
     notes: Optional[str] = Field(None, max_length=500)
     
-    @validator('hourly_rate', 'overtime_multiplier', 'weekend_multiplier', 'emergency_multiplier')
+    @field_validator('hourly_rate', 'overtime_multiplier', 'weekend_multiplier', 'emergency_multiplier')
+    @classmethod
     def quantize_decimals(cls, v):
         """Ensure proper decimal precision."""
         if v is not None:
             return v.quantize(Decimal('0.01'))
         return v
+    
+    model_config = ConfigDict(
+        from_attributes=True,
+        validate_assignment=True
+    )
 
 
 class LaborRateResponse(LaborRateBase):
@@ -66,8 +74,13 @@ class LaborRateResponse(LaborRateBase):
     created_by: str
     updated_by: Optional[str]
     
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(
+
+    
+        from_attributes=True
+
+    
+    )
 
 
 class EquipmentCostBase(BaseModel):
@@ -85,7 +98,8 @@ class EquipmentCostBase(BaseModel):
     effective_to: Optional[date] = None
     notes: Optional[str] = Field(None, max_length=500)
     
-    @validator('effective_to')
+    @field_validator('effective_to')
+    @classmethod
     def validate_effective_to(cls, v, values):
         """Ensure effective_to is after effective_from."""
         if v and 'effective_from' in values and v <= values['effective_from']:
@@ -123,8 +137,13 @@ class EquipmentCostResponse(EquipmentCostBase):
     created_by: str
     updated_by: Optional[str]
     
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(
+
+    
+        from_attributes=True
+
+    
+    )
 
 
 class OverheadSettingsBase(BaseModel):
@@ -139,7 +158,8 @@ class OverheadSettingsBase(BaseModel):
     is_default: bool = False
     is_active: bool = True
     
-    @validator('effective_to')
+    @field_validator('effective_to')
+    @classmethod
     def validate_effective_to(cls, v, values):
         """Ensure effective_to is after effective_from."""
         if v and 'effective_from' in values and v <= values['effective_from']:
@@ -171,8 +191,13 @@ class OverheadSettingsResponse(OverheadSettingsBase):
     created_by: str
     updated_by: Optional[str]
     
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(
+
+    
+        from_attributes=True
+
+    
+    )
 
 
 class VehicleRateBase(BaseModel):
@@ -186,7 +211,8 @@ class VehicleRateBase(BaseModel):
     is_active: bool = True
     notes: Optional[str] = Field(None, max_length=500)
     
-    @validator('effective_to')
+    @field_validator('effective_to')
+    @classmethod
     def validate_effective_to(cls, v, values):
         """Ensure effective_to is after effective_from."""
         if v and 'effective_from' in values and v <= values['effective_from']:
@@ -209,7 +235,8 @@ class VehicleRateUpdate(BaseModel):
     is_active: Optional[bool] = None
     notes: Optional[str] = Field(None, max_length=500)
     
-    @validator('rate_per_mile', pre=True)
+    @field_validator('rate_per_mile', mode='before')
+    @classmethod
     def quantize_rate(cls, v):
         """Ensure proper decimal precision."""
         if v is not None:
@@ -225,8 +252,13 @@ class VehicleRateResponse(VehicleRateBase):
     created_by: str
     updated_by: Optional[str]
     
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(
+
+    
+        from_attributes=True
+
+    
+    )
 
 
 class CostSummary(BaseModel):
@@ -237,8 +269,13 @@ class CostSummary(BaseModel):
     overhead_settings: OverheadSettingsResponse
     vehicle_rates: List[VehicleRateResponse]
     
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(
+
+    
+        from_attributes=True
+
+    
+    )
 
 
 class EffectiveDateQuery(BaseModel):
@@ -259,7 +296,8 @@ class DisposalFeeBase(BaseModel):
     is_active: bool = True
     notes: Optional[str] = Field(None, max_length=500)
     
-    @validator('fee_amount', pre=True)
+    @field_validator('fee_amount', mode='before')
+    @classmethod
     def quantize_fee(cls, v):
         """Ensure proper decimal precision."""
         return Decimal(str(v)).quantize(Decimal('0.01'))
@@ -280,7 +318,8 @@ class DisposalFeeUpdate(BaseModel):
     is_active: Optional[bool] = None
     notes: Optional[str] = Field(None, max_length=500)
     
-    @validator('fee_amount', pre=True)
+    @field_validator('fee_amount', mode='before')
+    @classmethod
     def quantize_fee(cls, v):
         """Ensure proper decimal precision."""
         if v is not None:
@@ -296,8 +335,13 @@ class DisposalFeeResponse(DisposalFeeBase):
     created_by: str
     updated_by: Optional[str]
     
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(
+
+    
+        from_attributes=True
+
+    
+    )
 
 
 # Seasonal Adjustment Schemas
@@ -313,7 +357,8 @@ class SeasonalAdjustmentBase(BaseModel):
     is_active: bool = True
     notes: Optional[str] = Field(None, max_length=500)
     
-    @validator('adjustment_percent', pre=True)
+    @field_validator('adjustment_percent', mode='before')
+    @classmethod
     def quantize_percent(cls, v):
         """Ensure proper decimal precision."""
         return Decimal(str(v)).quantize(Decimal('0.01'))
@@ -336,7 +381,8 @@ class SeasonalAdjustmentUpdate(BaseModel):
     is_active: Optional[bool] = None
     notes: Optional[str] = Field(None, max_length=500)
     
-    @validator('adjustment_percent', pre=True)
+    @field_validator('adjustment_percent', mode='before')
+    @classmethod
     def quantize_percent(cls, v):
         """Ensure proper decimal precision."""
         if v is not None:
@@ -352,8 +398,13 @@ class SeasonalAdjustmentResponse(SeasonalAdjustmentBase):
     created_by: str
     updated_by: Optional[str]
     
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(
+
+    
+        from_attributes=True
+
+    
+    )
 
 
 # Effective Costs Response

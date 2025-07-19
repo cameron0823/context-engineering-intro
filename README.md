@@ -2,6 +2,24 @@
 
 A production-ready tree service estimating application built with FastAPI, PostgreSQL, and modern Python practices. Features deterministic cost calculations, audit trails, role-based access control, and external API integrations.
 
+## 🚨 Current Status (July 19, 2024)
+
+### Quick Access
+- **Frontend**: https://cox-tree-quote-app.web.app
+- **Admin Dashboard**: https://cox-tree-quote-app.web.app/admin
+- **Status**: ✅ Working with local backend, ⚠️ Railway deployment has issues
+
+### To Start the App
+1. Run: `python simple_backend.py`
+2. Go to: https://cox-tree-quote-app.web.app/admin
+3. Console (F12): `window.api.baseUrl = 'http://localhost:8001/api'`
+4. Login: **Cameroncox1993** / **CoxTree#2024!Admin**
+
+### Known Issues
+- Railway deployment showing 502 (fix pushed, awaiting rebuild)
+- Using simple_backend.py as temporary workaround
+- See PROJECT_STATUS_2024-07-19.md for details
+
 ## 🚀 Features
 
 - **Deterministic Formula Pipeline**: Consistent calculations using Decimal precision

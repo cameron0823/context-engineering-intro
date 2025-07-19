@@ -1,0 +1,22 @@
+============================================================
+CAMERON'S ADMIN ACCOUNT - COX TREE SERVICE APP
+============================================================
+
+Username: Cameroncox1993
+Password: CoxTree#2024!Admin
+
+Access Level: Full Administrator
+Permissions: All system features
+
+Login URLs:
+- Mobile App: https://cox-tree-quote-app.web.app
+- Admin Dashboard: https://cox-tree-quote-app.web.app/admin
+
+For local testing:
+1. Open admin dashboard
+2. Press F12 for browser console
+3. Type: window.api.baseUrl = 'http://localhost:8001/api'
+4. Press Enter, then login
+
+KEEP THIS PASSWORD SECURE!
+============================================================

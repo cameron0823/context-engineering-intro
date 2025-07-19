@@ -19,9 +19,9 @@ INITIAL_USERS = [
         "role": "admin"
     },
     {
-        "username": "cameron",
+        "username": "Cameroncox1993",
         "email": "cameron@coxtreeservice.com",
-        "password": "CoxTree2024!",
+        "password": "CoxTree#2024!Admin",
         "full_name": "Cameron Cox",
         "role": "admin"
     },
