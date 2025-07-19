@@ -1,9 +1,10 @@
 // Tree Service Estimator Pro - Authentication Module
 class AuthService {
   constructor() {
+    // Use the computer's IP address for API calls
     this.baseUrl = window.location.hostname === 'localhost' 
       ? 'http://localhost:8002/api' 
-      : '/api';
+      : 'http://192.168.1.66:8002/api'; // Use hardwired computer's IP
     this.token = localStorage.getItem('auth_token');
     this.refreshToken = localStorage.getItem('refresh_token');
     this.currentUser = null;

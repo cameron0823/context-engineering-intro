@@ -1,9 +1,10 @@
 // Tree Service Estimator Pro - API Service
 class APIService {
   constructor() {
+    // Use the computer's IP address for API calls
     this.baseUrl = window.location.hostname === 'localhost' 
       ? 'http://localhost:8002/api' 
-      : '/api';
+      : 'http://192.168.1.66:8002/api'; // Use hardwired computer's IP
     this.timeout = 30000; // 30 seconds
   }
   
