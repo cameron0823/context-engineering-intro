@@ -1,0 +1,459 @@
+/* Mobile-Specific Styles for Tree Service Estimator Pro */
+
+/* iPhone X and newer Safe Areas */
+@supports (padding: max(0px)) {
+    .login-container {
+        padding-top: max(var(--spacing-xl), env(safe-area-inset-top));
+        padding-bottom: max(var(--spacing-xl), env(safe-area-inset-bottom));
+    }
+    
+    .app-header {
+        padding-top: env(safe-area-inset-top);
+    }
+    
+    .bottom-nav {
+        padding-bottom: max(8px, env(safe-area-inset-bottom));
+    }
+    
+    .main-content {
+        padding-bottom: calc(var(--bottom-nav-height) + max(var(--spacing-md), env(safe-area-inset-bottom)));
+    }
+}
+
+/* iOS Specific Styles */
+@supports (-webkit-touch-callout: none) {
+    /* Prevent text selection on tap */
+    * {
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+    }
+    
+    input,
+    textarea {
+        -webkit-user-select: text;
+    }
+    
+    /* Smooth scrolling */
+    .main-content,
+    .estimates-list,
+    .nav-drawer {
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    /* Prevent zoom on input focus */
+    input,
+    textarea,
+    select {
+        font-size: 16px !important;
+    }
+}
+
+/* Small Phones (iPhone SE, older Android) */
+@media (max-width: 375px) {
+    :root {
+        --font-size-base: 14px;
+        --font-size-sm: 12px;
+        --font-size-lg: 16px;
+        --font-size-xl: 20px;
+        --font-size-xxl: 28px;
+    }
+    
+    .logo-icon {
+        font-size: 48px;
+    }
+    
+    .dashboard-stats {
+        grid-template-columns: 1fr;
+    }
+    
+    .quick-actions {
+        grid-template-columns: 1fr;
+    }
+    
+    .equipment-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .total-amount {
+        font-size: 36px;
+    }
+    
+    .action-buttons {
+        flex-direction: column;
+    }
+}
+
+/* Landscape Orientation */
+@media (orientation: landscape) and (max-height: 500px) {
+    .app-header {
+        position: relative;
+    }
+    
+    .login-container {
+        min-height: auto;
+        padding: var(--spacing-md);
+    }
+    
+    .logo-section {
+        margin-bottom: var(--spacing-lg);
+    }
+    
+    .logo-icon {
+        font-size: 40px;
+    }
+    
+    .wizard-progress {
+        margin-bottom: var(--spacing-md);
+    }
+    
+    .main-content {
+        padding-top: var(--spacing-sm);
+        padding-bottom: calc(var(--bottom-nav-height) + var(--spacing-sm));
+    }
+}
+
+/* Touch Target Optimization */
+@media (pointer: coarse) {
+    /* Ensure all interactive elements meet 44x44 minimum */
+    button,
+    a,
+    .nav-link,
+    .nav-item,
+    .chip,
+    .crew-btn,
+    .equipment-card,
+    input[type="checkbox"],
+    input[type="radio"] {
+        min-height: 44px;
+        min-width: 44px;
+    }
+    
+    /* Increase spacing between clickable elements */
+    .nav-menu li {
+        margin-bottom: 4px;
+    }
+    
+    .filter-chips {
+        gap: var(--spacing-md);
+    }
+    
+    .estimates-list {
+        gap: var(--spacing-lg);
+    }
+}
+
+/* High Resolution Displays */
+@media (-webkit-min-device-pixel-ratio: 2),
+       (min-resolution: 192dpi) {
+    /* Use sharper shadows on retina displays */
+    :root {
+        --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.12);
+        --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.16);
+        --shadow-lg: 0 10px 20px rgba(0, 0, 0, 0.19);
+        --shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.22);
+    }
+}
+
+/* Foldable Devices */
+@media (min-width: 768px) and (max-width: 1024px) {
+    .login-form {
+        max-width: 500px;
+    }
+    
+    .dashboard-stats {
+        grid-template-columns: repeat(4, 1fr);
+    }
+    
+    .quick-actions {
+        grid-template-columns: repeat(4, 1fr);
+    }
+    
+    .equipment-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+    
+    .estimate-wizard {
+        max-width: 600px;
+        margin: 0 auto;
+    }
+}
+
+/* Loading States for Slow Connections */
+@media (prefers-reduced-motion: no-preference) {
+    .btn-loading i {
+        animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+    
+    .toast {
+        animation: none;
+    }
+}
+
+/* Dark Mode Optimizations */
+@media (prefers-color-scheme: dark) {
+    .login-container {
+        background: linear-gradient(135deg, #1a4d1a 0%, #0d2e0d 100%);
+    }
+    
+    .stat-card,
+    .estimate-card,
+    .estimate-wizard {
+        background-color: var(--gray-800);
+        color: var(--gray-100);
+    }
+    
+    input,
+    textarea,
+    select {
+        background-color: var(--gray-900);
+        border-color: var(--gray-700);
+        color: var(--gray-100);
+    }
+    
+    .btn-secondary {
+        background-color: var(--gray-700);
+        color: var(--gray-100);
+    }
+    
+    .equipment-card {
+        background-color: var(--gray-700);
+    }
+    
+    .estimate-summary,
+    .cost-breakdown {
+        background-color: var(--gray-900);
+    }
+}
+
+/* Network Status Indicator */
+.offline-mode .online-only {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.network-status {
+    position: fixed;
+    top: calc(var(--header-height) + var(--safe-area-inset-top));
+    left: 0;
+    right: 0;
+    padding: var(--spacing-sm) var(--spacing-md);
+    background-color: var(--warning-color);
+    color: var(--gray-900);
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    text-align: center;
+    z-index: var(--z-sticky);
+    transform: translateY(-100%);
+    transition: transform 0.3s ease;
+}
+
+.network-status.show {
+    transform: translateY(0);
+}
+
+/* PWA Install Prompt */
+.install-prompt {
+    position: fixed;
+    bottom: calc(var(--bottom-nav-height) + var(--safe-area-inset-bottom) + var(--spacing-md));
+    left: var(--spacing-md);
+    right: var(--spacing-md);
+    background-color: var(--primary-color);
+    color: var(--white);
+    padding: var(--spacing-lg);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-xl);
+    z-index: var(--z-fixed);
+    transform: translateY(200%);
+    transition: transform 0.3s ease;
+}
+
+.install-prompt.show {
+    transform: translateY(0);
+}
+
+.install-prompt h3 {
+    margin-bottom: var(--spacing-sm);
+}
+
+.install-prompt p {
+    margin-bottom: var(--spacing-md);
+    font-size: var(--font-size-sm);
+}
+
+.install-buttons {
+    display: flex;
+    gap: var(--spacing-md);
+}
+
+.install-buttons button {
+    flex: 1;
+}
+
+/* Swipe Actions */
+.swipeable {
+    position: relative;
+    overflow: hidden;
+}
+
+.swipe-actions {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    display: flex;
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+}
+
+.swipeable.swiped .swipe-actions {
+    transform: translateX(0);
+}
+
+.swipe-action {
+    width: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--white);
+    font-size: 20px;
+}
+
+.swipe-action.edit {
+    background-color: var(--info-color);
+}
+
+.swipe-action.delete {
+    background-color: var(--danger-color);
+}
+
+/* Pull to Refresh */
+.pull-to-refresh {
+    position: absolute;
+    top: -60px;
+    left: 0;
+    right: 0;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.3s ease;
+}
+
+.pull-to-refresh.pulling {
+    transform: translateY(60px);
+}
+
+.pull-to-refresh.refreshing {
+    transform: translateY(60px);
+}
+
+.pull-to-refresh i {
+    font-size: 24px;
+    color: var(--primary-color);
+    transition: transform 0.3s ease;
+}
+
+.pull-to-refresh.pulling i {
+    transform: rotate(180deg);
+}
+
+.pull-to-refresh.refreshing i {
+    animation: spin 1s linear infinite;
+}
+
+/* Keyboard Avoidance */
+.keyboard-open .bottom-nav {
+    transform: translateY(100%);
+}
+
+.keyboard-open .main-content {
+    padding-bottom: var(--spacing-md);
+}
+
+/* Voice Input Indicator */
+.voice-input-active {
+    position: relative;
+}
+
+.voice-input-active::after {
+    content: '';
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 24px;
+    height: 24px;
+    background-color: var(--danger-color);
+    border-radius: 50%;
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.7);
+    }
+    70% {
+        box-shadow: 0 0 0 10px rgba(220, 53, 69, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(220, 53, 69, 0);
+    }
+}
+
+/* Accessibility Improvements */
+@media (prefers-contrast: high) {
+    :root {
+        --primary-color: #1a5a1a;
+        --text-primary: #000000;
+        --text-secondary: #333333;
+        --border-color: #000000;
+    }
+    
+    .btn-primary {
+        border: 2px solid #000000;
+    }
+}
+
+/* Force Touch / 3D Touch */
+@media (hover: hover) and (pointer: fine) {
+    .estimate-card:hover {
+        transform: scale(1.02);
+    }
+    
+    .action-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-lg);
+    }
+}
+
+/* Handle Notch on Landscape */
+@media (orientation: landscape) {
+    .app-header {
+        padding-left: max(var(--spacing-md), env(safe-area-inset-left));
+        padding-right: max(var(--spacing-md), env(safe-area-inset-right));
+    }
+    
+    .main-content {
+        padding-left: max(var(--spacing-md), env(safe-area-inset-left));
+        padding-right: max(var(--spacing-md), env(safe-area-inset-right));
+    }
+    
+    .bottom-nav {
+        padding-left: env(safe-area-inset-left);
+        padding-right: env(safe-area-inset-right);
+    }
+}

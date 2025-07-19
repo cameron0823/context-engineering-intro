@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="theme-color" content="#2d7a2d">
+    <title>Tree Service Estimator Pro</title>
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    
+    <!-- iOS Icons -->
+    <link rel="apple-touch-icon" href="images/icons/icon-152x152.png">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/mobile.css">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- App Container -->
+    <div id="app" class="app-container">
+        
+        <!-- Login Screen -->
+        <div id="login-screen" class="screen active">
+            <div class="login-container">
+                <div class="logo-section">
+                    <i class="fas fa-tree logo-icon"></i>
+                    <h1>Tree Service Pro</h1>
+                    <p>Professional Estimating</p>
+                </div>
+                
+                <form id="login-form" class="login-form">
+                    <div class="form-group">
+                        <label for="username">Username</label>
+                        <input type="text" id="username" name="username" required autocomplete="username">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" name="password" required autocomplete="current-password">
+                    </div>
+                    
+                    <div class="form-group checkbox-group">
+                        <label>
+                            <input type="checkbox" id="remember-me" name="remember">
+                            <span>Remember me</span>
+                        </label>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary btn-large">
+                        <span class="btn-text">Sign In</span>
+                        <span class="btn-loading" style="display: none;">
+                            <i class="fas fa-spinner fa-spin"></i>
+                        </span>
+                    </button>
+                    
+                    <div id="login-error" class="error-message" style="display: none;"></div>
+                </form>
+                
+                <div class="offline-indicator" id="offline-indicator" style="display: none;">
+                    <i class="fas fa-wifi-slash"></i> Offline Mode
+                </div>
+            </div>
+        </div>
+        
+        <!-- Main App Shell -->
+        <div id="main-app" class="screen" style="display: none;">
+            
+            <!-- Header -->
+            <header class="app-header">
+                <div class="header-content">
+                    <button id="menu-toggle" class="menu-toggle">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h2 id="page-title">Dashboard</h2>
+                    <button id="profile-btn" class="profile-btn">
+                        <i class="fas fa-user-circle"></i>
+                    </button>
+                </div>
+            </header>
+            
+            <!-- Navigation Drawer -->
+            <nav id="nav-drawer" class="nav-drawer">
+                <div class="drawer-header">
+                    <div class="user-info">
+                        <i class="fas fa-user-circle user-avatar"></i>
+                        <div>
+                            <h3 id="user-name">User Name</h3>
+                            <p id="user-role">Role</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <ul class="nav-menu">
+                    <li><a href="#dashboard" class="nav-link active" data-page="dashboard">
+                        <i class="fas fa-home"></i> Dashboard
+                    </a></li>
+                    <li><a href="#new-estimate" class="nav-link" data-page="new-estimate">
+                        <i class="fas fa-plus-circle"></i> New Estimate
+                    </a></li>
+                    <li><a href="#estimates" class="nav-link" data-page="estimates">
+                        <i class="fas fa-file-invoice-dollar"></i> My Estimates
+                    </a></li>
+                    <li class="manager-only" style="display: none;"><a href="#approvals" class="nav-link" data-page="approvals">
+                        <i class="fas fa-check-circle"></i> Approvals
+                    </a></li>
+                    <li class="admin-only" style="display: none;"><a href="#settings" class="nav-link" data-page="settings">
+                        <i class="fas fa-cog"></i> Settings
+                    </a></li>
+                    <li><a href="#" id="logout-btn" class="nav-link">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </a></li>
+                </ul>
+            </nav>
+            
+            <!-- Main Content Area -->
+            <main id="main-content" class="main-content">
+                
+                <!-- Dashboard Page -->
+                <div id="dashboard-page" class="page active">
+                    <div class="dashboard-stats">
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-file-invoice-dollar"></i>
+                            </div>
+                            <div class="stat-details">
+                                <h3 id="estimates-today">0</h3>
+                                <p>Today's Estimates</p>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-dollar-sign"></i>
+                            </div>
+                            <div class="stat-details">
+                                <h3 id="total-value">$0</h3>
+                                <p>Total Value</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="quick-actions">
+                        <button class="action-btn" onclick="app.navigateTo('new-estimate')">
+                            <i class="fas fa-plus-circle"></i>
+                            <span>Create Estimate</span>
+                        </button>
+                        
+                        <button class="action-btn" onclick="app.navigateTo('estimates')">
+                            <i class="fas fa-list"></i>
+                            <span>View Estimates</span>
+                        </button>
+                    </div>
+                    
+                    <div class="recent-estimates">
+                        <h3>Recent Estimates</h3>
+                        <div id="recent-estimates-list" class="estimates-list">
+                            <!-- Recent estimates will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- New Estimate Page -->
+                <div id="new-estimate-page" class="page" style="display: none;">
+                    <div class="estimate-wizard">
+                        
+                        <!-- Progress Bar -->
+                        <div class="wizard-progress">
+                            <div class="progress-step active" data-step="1">
+                                <span class="step-number">1</span>
+                                <span class="step-label">Customer</span>
+                            </div>
+                            <div class="progress-step" data-step="2">
+                                <span class="step-number">2</span>
+                                <span class="step-label">Job</span>
+                            </div>
+                            <div class="progress-step" data-step="3">
+                                <span class="step-number">3</span>
+                                <span class="step-label">Work</span>
+                            </div>
+                            <div class="progress-step" data-step="4">
+                                <span class="step-number">4</span>
+                                <span class="step-label">Review</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Wizard Content -->
+                        <form id="estimate-form" class="wizard-form">
+                            
+                            <!-- Step 1: Customer Info -->
+                            <div class="wizard-step active" data-step="1">
+                                <h3>Customer Information</h3>
+                                
+                                <div class="form-group">
+                                    <label for="customer-name">Customer Name *</label>
+                                    <input type="text" id="customer-name" name="customer_name" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="customer-phone">Phone Number *</label>
+                                    <input type="tel" id="customer-phone" name="customer_phone" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="customer-email">Email Address</label>
+                                    <input type="email" id="customer-email" name="customer_email">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="service-address">Service Address *</label>
+                                    <div class="input-with-btn">
+                                        <input type="text" id="service-address" name="service_address" required>
+                                        <button type="button" class="btn btn-icon" onclick="app.useCurrentLocation()">
+                                            <i class="fas fa-map-marker-alt"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Step 2: Job Details -->
+                            <div class="wizard-step" data-step="2" style="display: none;">
+                                <h3>Job Details</h3>
+                                
+                                <div class="form-group">
+                                    <label for="job-type">Job Type *</label>
+                                    <select id="job-type" name="job_type" required>
+                                        <option value="">Select job type...</option>
+                                        <option value="tree-removal">Tree Removal</option>
+                                        <option value="tree-trimming">Tree Trimming</option>
+                                        <option value="stump-grinding">Stump Grinding</option>
+                                        <option value="emergency">Emergency Service</option>
+                                        <option value="other">Other</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="job-description">Description *</label>
+                                    <textarea id="job-description" name="job_description" rows="4" required 
+                                        placeholder="Describe the work to be done..."></textarea>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label>Job Photos</label>
+                                    <div class="photo-upload-area">
+                                        <button type="button" class="btn btn-secondary" onclick="app.capturePhoto()">
+                                            <i class="fas fa-camera"></i> Take Photo
+                                        </button>
+                                        <button type="button" class="btn btn-secondary" onclick="app.selectPhoto()">
+                                            <i class="fas fa-image"></i> Choose Photo
+                                        </button>
+                                        <input type="file" id="photo-input" accept="image/*" capture="camera" style="display: none;">
+                                    </div>
+                                    <div id="photo-preview" class="photo-preview"></div>
+                                </div>
+                            </div>
+                            
+                            <!-- Step 3: Work Configuration -->
+                            <div class="wizard-step" data-step="3" style="display: none;">
+                                <h3>Work Configuration</h3>
+                                
+                                <div class="form-group">
+                                    <label for="work-hours">Estimated Hours *</label>
+                                    <input type="number" id="work-hours" name="work_hours" min="0.5" step="0.5" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label>Crew Size *</label>
+                                    <div class="crew-selector">
+                                        <button type="button" class="crew-btn" data-crew="1">1</button>
+                                        <button type="button" class="crew-btn" data-crew="2">2</button>
+                                        <button type="button" class="crew-btn active" data-crew="3">3</button>
+                                        <button type="button" class="crew-btn" data-crew="4">4</button>
+                                        <button type="button" class="crew-btn" data-crew="5">5+</button>
+                                    </div>
+                                    <input type="hidden" id="crew-size" name="crew_size" value="3">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label>Equipment Needed</label>
+                                    <div class="equipment-grid">
+                                        <label class="equipment-item">
+                                            <input type="checkbox" name="equipment" value="chipper">
+                                            <div class="equipment-card">
+                                                <i class="fas fa-cogs"></i>
+                                                <span>Chipper</span>
+                                            </div>
+                                        </label>
+                                        <label class="equipment-item">
+                                            <input type="checkbox" name="equipment" value="bucket_truck">
+                                            <div class="equipment-card">
+                                                <i class="fas fa-truck"></i>
+                                                <span>Bucket Truck</span>
+                                            </div>
+                                        </label>
+                                        <label class="equipment-item">
+                                            <input type="checkbox" name="equipment" value="crane">
+                                            <div class="equipment-card">
+                                                <i class="fas fa-truck-pickup"></i>
+                                                <span>Crane</span>
+                                            </div>
+                                        </label>
+                                        <label class="equipment-item">
+                                            <input type="checkbox" name="equipment" value="stump_grinder">
+                                            <div class="equipment-card">
+                                                <i class="fas fa-circle-notch"></i>
+                                                <span>Stump Grinder</span>
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label>
+                                        <input type="checkbox" id="emergency-job" name="emergency_job">
+                                        <span>Emergency/After-Hours Service</span>
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <!-- Step 4: Review & Calculate -->
+                            <div class="wizard-step" data-step="4" style="display: none;">
+                                <h3>Review & Calculate</h3>
+                                
+                                <div class="estimate-summary">
+                                    <h4>Customer</h4>
+                                    <p id="summary-customer"></p>
+                                    <p id="summary-address"></p>
+                                    
+                                    <h4>Job Details</h4>
+                                    <p id="summary-job-type"></p>
+                                    <p id="summary-description"></p>
+                                    
+                                    <h4>Work Configuration</h4>
+                                    <p id="summary-hours"></p>
+                                    <p id="summary-crew"></p>
+                                    <p id="summary-equipment"></p>
+                                </div>
+                                
+                                <button type="button" class="btn btn-primary btn-large" onclick="app.calculateEstimate()">
+                                    <i class="fas fa-calculator"></i> Calculate Estimate
+                                </button>
+                                
+                                <div id="calculation-result" class="calculation-result" style="display: none;">
+                                    <h4>Estimate Total</h4>
+                                    <div class="total-amount" id="total-amount">$0</div>
+                                    
+                                    <div class="cost-breakdown">
+                                        <div class="cost-item">
+                                            <span>Labor Cost:</span>
+                                            <span id="labor-cost">$0</span>
+                                        </div>
+                                        <div class="cost-item">
+                                            <span>Equipment Cost:</span>
+                                            <span id="equipment-cost">$0</span>
+                                        </div>
+                                        <div class="cost-item">
+                                            <span>Travel Cost:</span>
+                                            <span id="travel-cost">$0</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="action-buttons">
+                                        <button type="button" class="btn btn-success" onclick="app.saveEstimate()">
+                                            <i class="fas fa-save"></i> Save Estimate
+                                        </button>
+                                        <button type="button" class="btn btn-secondary" onclick="app.shareEstimate()">
+                                            <i class="fas fa-share"></i> Share
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                        </form>
+                        
+                        <!-- Navigation Buttons -->
+                        <div class="wizard-nav">
+                            <button type="button" class="btn btn-secondary" id="prev-btn" onclick="app.previousStep()" style="display: none;">
+                                <i class="fas fa-arrow-left"></i> Previous
+                            </button>
+                            <button type="button" class="btn btn-primary" id="next-btn" onclick="app.nextStep()">
+                                Next <i class="fas fa-arrow-right"></i>
+                            </button>
+                        </div>
+                        
+                    </div>
+                </div>
+                
+                <!-- Estimates List Page -->
+                <div id="estimates-page" class="page" style="display: none;">
+                    <div class="page-header">
+                        <h3>My Estimates</h3>
+                        <div class="search-bar">
+                            <i class="fas fa-search"></i>
+                            <input type="search" placeholder="Search estimates..." id="estimate-search">
+                        </div>
+                    </div>
+                    
+                    <div class="filter-chips">
+                        <button class="chip active" data-filter="all">All</button>
+                        <button class="chip" data-filter="draft">Draft</button>
+                        <button class="chip" data-filter="pending">Pending</button>
+                        <button class="chip" data-filter="approved">Approved</button>
+                    </div>
+                    
+                    <div id="estimates-list" class="estimates-list">
+                        <!-- Estimates will be loaded here -->
+                    </div>
+                </div>
+                
+            </main>
+            
+            <!-- Bottom Navigation -->
+            <nav class="bottom-nav">
+                <a href="#dashboard" class="nav-item active" data-page="dashboard">
+                    <i class="fas fa-home"></i>
+                    <span>Home</span>
+                </a>
+                <a href="#new-estimate" class="nav-item" data-page="new-estimate">
+                    <i class="fas fa-plus-circle"></i>
+                    <span>New</span>
+                </a>
+                <a href="#estimates" class="nav-item" data-page="estimates">
+                    <i class="fas fa-list"></i>
+                    <span>Estimates</span>
+                </a>
+                <a href="#profile" class="nav-item" data-page="profile">
+                    <i class="fas fa-user"></i>
+                    <span>Profile</span>
+                </a>
+            </nav>
+            
+        </div>
+        
+        <!-- Loading Overlay -->
+        <div id="loading-overlay" class="loading-overlay" style="display: none;">
+            <div class="spinner">
+                <i class="fas fa-spinner fa-spin fa-3x"></i>
+                <p>Loading...</p>
+            </div>
+        </div>
+        
+        <!-- Toast Notifications -->
+        <div id="toast-container" class="toast-container"></div>
+        
+    </div>
+    
+    <!-- Scripts -->
+    <script src="js/app.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/estimates.js"></script>
+    <script src="js/camera.js"></script>
+    <script src="js/offline.js"></script>
+    <script src="js/utils.js"></script>
+    
+    <!-- Service Worker Registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/mobile_app/service-worker.js')
+                    .then(reg => console.log('Service Worker registered'))
+                    .catch(err => console.log('Service Worker registration failed'));
+            });
+        }
+    </script>
+</body>
+</html>
