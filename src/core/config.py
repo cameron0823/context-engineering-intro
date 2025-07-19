@@ -36,9 +36,10 @@ class Settings(BaseSettings):
     REFRESH_TOKEN_EXPIRE_DAYS: int = 7
     
     # CORS
-    CORS_ORIGINS: List[AnyHttpUrl] = []
+    CORS_ORIGINS: List[str] = []
     
     @field_validator("CORS_ORIGINS", mode='before')
+    @classmethod
     def assemble_cors_origins(cls, v):
         if isinstance(v, str):
             return [item.strip() for item in v.split(",")]
