@@ -2,14 +2,20 @@
 Main FastAPI application entry point.
 """
 from contextlib import asynccontextmanager
-from fastapi import FastAPI
+from fastapi import FastAPI, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
 from prometheus_client import make_asgi_app
+from slowapi import _rate_limit_exceeded_handler
+from slowapi.errors import RateLimitExceeded
 import structlog
+import time
+import uuid
 
 from src.core.config import settings
 from src.api import auth, estimates, costs, external
 from src.core.cache import init_cache, close_cache
+from src.core.rate_limit import limiter, rate_limit_exceeded_handler
+from src.core.monitoring import init_sentry, track_request_metrics, PerformanceMonitor
 # Future imports - will be added as we create them
 # from src.api import reports
 # from src.db.session import init_db
@@ -45,6 +51,10 @@ async def lifespan(app: FastAPI):
     logger.info("Starting Tree Service Estimating Application", 
                 version=settings.APP_VERSION,
                 environment=settings.ENVIRONMENT)
+    
+    # Initialize monitoring
+    init_sentry()
+    logger.info("Monitoring initialized")
     
     # Initialize database
     # await init_db()
@@ -90,6 +100,53 @@ if settings.CORS_ORIGINS:
 metrics_app = make_asgi_app()
 app.mount("/metrics", metrics_app)
 
+# Add rate limiter
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, rate_limit_exceeded_handler)
+
+# Add monitoring middleware
+@app.middleware("http")
+async def monitoring_middleware(request: Request, call_next):
+    """Add monitoring and tracking to all requests."""
+    # Generate request ID
+    request_id = str(uuid.uuid4())
+    request.state.request_id = request_id
+    
+    # Start timing
+    start_time = time.time()
+    
+    # Add request ID to logger context
+    with structlog.contextvars.bind_contextvars(request_id=request_id):
+        try:
+            response = await call_next(request)
+            
+            # Log request
+            duration = time.time() - start_time
+            logger.info(
+                "request_completed",
+                method=request.method,
+                path=request.url.path,
+                status_code=response.status_code,
+                duration=duration
+            )
+            
+            # Add headers
+            response.headers["X-Request-ID"] = request_id
+            response.headers["X-Response-Time"] = str(duration)
+            
+            return response
+            
+        except Exception as e:
+            duration = time.time() - start_time
+            logger.error(
+                "request_failed",
+                method=request.method,
+                path=request.url.path,
+                duration=duration,
+                error=str(e)
+            )
+            raise
+
 # Include routers
 app.include_router(auth.router, prefix="/api/auth", tags=["Authentication"])
 app.include_router(estimates.router, prefix="/api/estimates", tags=["Estimates"])
@@ -112,12 +169,54 @@ async def root():
 @app.get("/health")
 async def health_check():
     """Health check endpoint for monitoring."""
-    # TODO: Add database and redis health checks
-    return {
+    from src.services.external_apis import ExternalAPIService
+    from src.core.monitoring import update_health_status
+    
+    health_status = {
         "status": "healthy",
         "version": settings.APP_VERSION,
-        "environment": settings.ENVIRONMENT
+        "environment": settings.ENVIRONMENT,
+        "timestamp": time.time(),
+        "checks": {}
     }
+    
+    # Check cache
+    try:
+        from src.core.cache import get_cache
+        cache = get_cache()
+        if cache:
+            await cache.ping()
+            health_status["checks"]["cache"] = {"status": "healthy"}
+            update_health_status("cache", True)
+        else:
+            health_status["checks"]["cache"] = {"status": "unavailable"}
+            update_health_status("cache", False)
+    except Exception as e:
+        health_status["checks"]["cache"] = {"status": "unhealthy", "error": str(e)}
+        health_status["status"] = "degraded"
+        update_health_status("cache", False)
+    
+    # Check external APIs
+    try:
+        async with ExternalAPIService() as api_service:
+            api_health = await api_service.get_api_health_status()
+            health_status["checks"]["external_apis"] = api_health
+            
+            # Update individual API health metrics
+            for api_name, api_status in api_health.items():
+                if api_name != "overall":
+                    is_healthy = api_status.get("status") == "healthy"
+                    update_health_status(f"api_{api_name}", is_healthy)
+                    
+            if api_health.get("overall") != "healthy":
+                health_status["status"] = "degraded"
+    except Exception as e:
+        health_status["checks"]["external_apis"] = {"status": "error", "error": str(e)}
+        health_status["status"] = "degraded"
+    
+    # TODO: Add database health check when implemented
+    
+    return health_status
 
 
 if __name__ == "__main__":

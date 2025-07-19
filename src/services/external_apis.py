@@ -97,17 +97,29 @@ class ExternalAPIService:
     
     def _initialize_clients(self):
         """Initialize HTTP clients with appropriate timeouts and headers."""
-        # Google Maps client
+        # Google Maps client with configurable timeout
         self.google_maps_client = httpx.AsyncClient(
             base_url="https://maps.googleapis.com",
-            timeout=httpx.Timeout(30.0),
+            timeout=httpx.Timeout(
+                timeout=settings.GOOGLE_MAPS_TIMEOUT_SECONDS,
+                connect=settings.HTTP_CONNECT_TIMEOUT_SECONDS,
+                read=settings.HTTP_READ_TIMEOUT_SECONDS,
+                write=settings.HTTP_WRITE_TIMEOUT_SECONDS,
+                pool=settings.HTTP_POOL_TIMEOUT_SECONDS
+            ),
             headers={"User-Agent": f"{settings.APP_NAME}/{settings.APP_VERSION}"}
         )
         
-        # QuickBooks client
+        # QuickBooks client with configurable timeout
         self.quickbooks_client = httpx.AsyncClient(
             base_url=settings.QUICKBOOKS_API_URL,
-            timeout=httpx.Timeout(30.0),
+            timeout=httpx.Timeout(
+                timeout=settings.QUICKBOOKS_TIMEOUT_SECONDS,
+                connect=settings.HTTP_CONNECT_TIMEOUT_SECONDS,
+                read=settings.HTTP_READ_TIMEOUT_SECONDS,
+                write=settings.HTTP_WRITE_TIMEOUT_SECONDS,
+                pool=settings.HTTP_POOL_TIMEOUT_SECONDS
+            ),
             headers={
                 "User-Agent": f"{settings.APP_NAME}/{settings.APP_VERSION}",
                 "Accept": "application/json",
@@ -115,10 +127,16 @@ class ExternalAPIService:
             }
         )
         
-        # Fuel API client (example using a mock API - replace with actual)
+        # Fuel API client with configurable timeout
         self.fuel_api_client = httpx.AsyncClient(
             base_url="https://api.fuelprices.com",  # Replace with actual API
-            timeout=httpx.Timeout(10.0),
+            timeout=httpx.Timeout(
+                timeout=settings.FUEL_API_TIMEOUT_SECONDS,
+                connect=settings.HTTP_CONNECT_TIMEOUT_SECONDS,
+                read=settings.HTTP_READ_TIMEOUT_SECONDS,
+                write=settings.HTTP_WRITE_TIMEOUT_SECONDS,
+                pool=settings.HTTP_POOL_TIMEOUT_SECONDS
+            ),
             headers={
                 "User-Agent": f"{settings.APP_NAME}/{settings.APP_VERSION}",
                 "X-API-Key": settings.FUEL_API_KEY

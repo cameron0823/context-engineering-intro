@@ -145,8 +145,11 @@ async def list_estimates(
     - Viewers can only see approved/invoiced estimates
     - Other roles can see all estimates
     """
-    # Build query
-    query = select(Estimate).where(Estimate.deleted_at.is_(None))
+    # Build query with eager loading to prevent N+1 queries
+    query = select(Estimate).options(
+        selectinload(Estimate.created_by_user),
+        selectinload(Estimate.approved_by_user)
+    ).where(Estimate.deleted_at.is_(None))
     
     # Apply role-based filtering
     if current_user.role == UserRole.VIEWER:

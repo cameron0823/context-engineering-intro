@@ -47,14 +47,24 @@ class Settings(BaseSettings):
     # External APIs
     GOOGLE_MAPS_API_KEY: str
     GOOGLE_MAPS_DAILY_LIMIT: int = 2500
+    GOOGLE_MAPS_TIMEOUT_SECONDS: float = 30.0
     
     QUICKBOOKS_CLIENT_ID: str
     QUICKBOOKS_CLIENT_SECRET: str
     QUICKBOOKS_COMPANY_ID: str
     QUICKBOOKS_API_URL: AnyHttpUrl = "https://sandbox-quickbooks.api.intuit.com"
+    QUICKBOOKS_TIMEOUT_SECONDS: float = 30.0
     
     FUEL_API_KEY: str
     FUEL_API_HOURLY_LIMIT: int = 100
+    FUEL_API_TIMEOUT_SECONDS: float = 10.0
+    
+    # HTTP Client settings
+    DEFAULT_HTTP_TIMEOUT_SECONDS: float = 30.0
+    HTTP_CONNECT_TIMEOUT_SECONDS: float = 5.0
+    HTTP_READ_TIMEOUT_SECONDS: float = 30.0
+    HTTP_WRITE_TIMEOUT_SECONDS: float = 30.0
+    HTTP_POOL_TIMEOUT_SECONDS: float = 5.0
     
     # Redis Cache
     REDIS_URL: str = "redis://localhost:6379/0"
@@ -103,6 +113,10 @@ class Settings(BaseSettings):
     # Logging
     LOG_LEVEL: str = "INFO"
     LOG_FORMAT: str = "json"
+    
+    # Monitoring
+    SENTRY_DSN: Optional[str] = None
+    ENABLE_METRICS: bool = True
     
     # API Limits
     MAX_ESTIMATE_HOURS: Decimal = Decimal("16.0")

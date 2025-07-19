@@ -7,10 +7,12 @@ from fastapi import APIRouter, Depends, HTTPException, status, Request, Backgrou
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, or_
+from jose import JWTError
 
 from src.db.session import get_db
 from src.core.config import settings
 from src.core.security import security
+from src.core.rate_limit import limiter, RateLimits
 from src.models.user import User
 from src.models.audit import AuditLog
 from src.schemas.user import (
@@ -27,6 +29,7 @@ router = APIRouter()
 
 
 @router.post("/register", response_model=UserResponse)
+@limiter.limit(RateLimits.auth_register)
 async def register(
     user_data: UserCreate,
     db: Annotated[AsyncSession, Depends(get_db)],
@@ -97,6 +100,7 @@ async def register(
 
 
 @router.post("/login", response_model=Token)
+@limiter.limit(RateLimits.auth_login)
 async def login(
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
     db: Annotated[AsyncSession, Depends(get_db)],
@@ -306,9 +310,11 @@ async def change_password(
 
 
 @router.post("/request-password-reset")
+@limiter.limit(RateLimits.auth_password_reset)
 async def request_password_reset(
     email: str,
     db: Annotated[AsyncSession, Depends(get_db)],
+    request: Request,
     background_tasks: BackgroundTasks
 ) -> dict:
     """
